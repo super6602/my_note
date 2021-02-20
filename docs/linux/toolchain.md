@@ -13,6 +13,10 @@ title: Usage of linux toolchain
 
 ### Gn build system
 
+## Device Tree
+
+
+
 
 ## File System Hierarchy
 
