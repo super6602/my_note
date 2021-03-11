@@ -13,6 +13,8 @@ title: Usage of zephyr
 
 [NCS教學](https://www.eet-china.com/mp/a34779.html )
 
+[NCS SDK get started](https://devzone.nordicsemi.com/nordic/nrf-connect-sdk-guides/)
+
 ## Overview
 
 ### Zephyr Overview
