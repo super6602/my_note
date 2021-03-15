@@ -1,6 +1,6 @@
 module.exports = {
   someSidebar: {
-    Docusaurus: ['doc1', 'doc2', 'doc3'],
-    Features: ['mdx'],
+    Linux: ['doc1', 'linux/device_tree', 'linux/linux_toolchain', 'linux/debugger'],
+    Zephyr: ['zephyr/zephyr', 'zephyr/west', 'zephyr/arm_coresight'],
   },
 };

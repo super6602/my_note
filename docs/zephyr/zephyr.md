@@ -111,13 +111,10 @@ title: Usage of zephyr
 #### Parameters
 
 #mkdir build && cd build
-#cmake -GNinja -DBOARD=<board> …
+#cmake -GNinja -DBOARD=
 #ninja
-3.1.2 menuconfig启动
+3.1.2 menuconfig
 
-启动menuconfig，执行如下命令，出现menuconfig界面。熟悉Linux开发的朋友一定对这个界面非常熟悉。
-
-A.启动terminal-based menuconfig使用以下方式：
  使用west：
 #west build -t menuconfig
  ninja：
