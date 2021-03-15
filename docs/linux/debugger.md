@@ -46,7 +46,7 @@ Linux kernel中內建kgdb, kdb(在linux kermel內, 但沒有使用到linux kerne
 
 ### nrf52840 board
 
-:::image type="content" source="image/debugger/openocd_with_nrf52.png" alt-text="setup":::
+![platform](./image/debugger/openocd_with_nrf52.png)
 
 - 先將openocd for nrf52 board打通, 此時會
     - 自動開通telnet server port 4444

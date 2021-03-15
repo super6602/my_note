@@ -103,3 +103,22 @@ title: Usage of zephyr
 - 他直接drop directly into a gdb prompt which is running on the target
 
 ![platform](./image/zephyr/west_example7.png)
+
+#### MISC
+
+[west config](https://blog.csdn.net/bruceoxl/article/details/109139821)
+
+#### Parameters
+
+#mkdir build && cd build
+#cmake -GNinja -DBOARD=<board> …
+#ninja
+3.1.2 menuconfig启动
+
+启动menuconfig，执行如下命令，出现menuconfig界面。熟悉Linux开发的朋友一定对这个界面非常熟悉。
+
+A.启动terminal-based menuconfig使用以下方式：
+ 使用west：
+#west build -t menuconfig
+ ninja：
+#ninja menuconfig
