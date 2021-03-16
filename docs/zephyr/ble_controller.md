@@ -64,7 +64,9 @@ Currently the BLE controller uses them to call functions in interrupt contexts.
 
 ![platform](./image/ble_controller/packet_tx.png)
 
-- TX PATH: 依樣由HCI drive LLIF去enqueue
+- TX PATH: 一樣由HCI drive LLIF去enqueue到FIFO
+- packet_tx_fifo: fixed size FIFO, 和HCI read buffer size的大小相同
+- 傳完後會tx_done_queue
 
 ![platform](./image/ble_controller/packet_rx.png)
 
