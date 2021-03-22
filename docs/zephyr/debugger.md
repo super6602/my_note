@@ -150,3 +150,6 @@ SWD 介面還有另一個選配: SWO.
 - Step3.2: 在Terminal中使用JLinkExe連上Target, 並且在另一個terminal中開啟JLinkRTTClient, 此時的SEGGER_RTT_printf就會顯示在上面
 
 ![platform](./image/debugger/JLinkRTT2.png)
+
+
+#### J-LINK Log on Zephyr
