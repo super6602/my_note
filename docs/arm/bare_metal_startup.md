@@ -21,11 +21,11 @@ title: arm cortex M based startup
     - GNU for ARM embedded Processors (免費的)
     - ARM-CC: arm提供的, ships with KEIL, 需要licensing
 
-以下為ARM-GCC的重要biaries
+以下為ARM-GCC的重要binaries
 
 ![platform](./image/bare_metal_startup/arm-gcc.png)
 
-- arm-none-eabi-gcc: 不只complie, 還有assemble & link obj並且創造executable file
+- arm-none-eabi-gcc: 不只compile, 還有assemble & link obj並且創造executable file
 - arm-none-eabi-ld: 顯性呼叫linker
 - arm-none-eabi-as: 將assembly code轉成machine code實際的執行檔
 
@@ -269,16 +269,70 @@ title: arm cortex M based startup
 
 #### example
 
-![platform](./image/bare_metal_startup/exampe_openocd1.png)
+![platform](./image/bare_metal_startup/example_openocd1.png)
 
 1. run openOCD server, 此時會locate GDB server on 3333
 
 
-![platform](./image/bare_metal_startup/exampe_openocd2.png)
+![platform](./image/bare_metal_startup/example_openocd2.png)
 
 2. 打開arm-none-eabi-gdb.exe, 去init GDB client
 3. monitor: 用來區分是GDB command or native openOCD command; 連上talnet時就不用打monitor
 
-![platform](./image/bare_metal_startup/exampe_openocd3.png)
+![platform](./image/bare_metal_startup/example_openocd3.png)
 
 4. 使用flash write_image寫入.elf file
+
+
+## 'C' standard library
+
+### Newlib
+
+![platform](./image/bare_metal_startup/newlib.png)
+
+![platform](./image/bare_metal_startup/newlib-nano.png)
+
+![platform](./image/bare_metal_startup/newlib_location.png)
+
+- spec file: use during linker stage to make your application link to newlib/newlib-nano
+
+### Low Level System Calls
+
+![platform](./image/bare_metal_startup/low_level_system_call.png)
+
+- Low level system call: 操作實際硬體的部份
+- Newlib: 實現standard C library中HW相關的部份; 不提供low level system call的實作
+
+![platform](./image/bare_metal_startup/example_low_level_system_call.png)
+
+- printf: standard c library function
+- Newlib-Nano: 提供'C' standard library
+- _write(): low level system calls, 操作UART/ITM/LCD, etc...
+- newlib redirect printf to low-level write function
+
+![platform](./image/bare_metal_startup/example_low_level_system_call2.png)
+
+- syscall.s: contains the function definition of some of important system calls, such as _write/_read/etc...; this file does not contain complete implementation of all system calls (implementation system call depends on your target), this file only provides function definition without build errors
+
+#### example
+
+![platform](./image/bare_metal_startup/example_system_call.png)
+
+- --specs=nono.spec: link c standard library with newlib-nano
+
+![platform](./image/bare_metal_startup/example_system_call2.png)
+
+- 發現有symbol不認識; 需要在linker裡面加
+
+![platform](./image/bare_metal_startup/example_system_call3.png)
+
+- 加入symbol
+
+
+![platform](./image/bare_metal_startup/example_system_call4.png)
+
+- 使用semihost
+
+![platform](./image/bare_metal_startup/example_system_call5.png)
+
+- 在server打開semihost
