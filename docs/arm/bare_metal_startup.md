@@ -9,6 +9,8 @@ title: arm cortex M based startup
 
 [download method](https://blog.csdn.net/m0_37621078/article/details/106798909)
 
+[flash loader](https://my.oschina.net/u/4318517/blog/3299813)
+
 ## Build Process
 
 ### Cross Compliation and Toolchains
@@ -240,3 +242,43 @@ title: arm cortex M based startup
 ![platform](./image/bare_metal_startup/example_linker_map.png)
 
 ## Flashing and Debugging
+
+![platform](./image/bare_metal_startup/flash_download.png)
+
+- 利用adaptor連上CPU, 將host call轉換成SWD/JTAG debug protocol
+- 在host使用openOCD/JlinkExe, etc.下command以控制target
+
+### OpenOCD
+
+![platform](./image/bare_metal_startup/openocd.png)
+
+- 使用openOCD download and debug using GDB
+
+
+### Remote Debug
+
+![platform](./image/bare_metal_startup/flash_download.png)
+
+1. OpenOCD用ST-LINK driver透過USB和adapter連線 (openOCD sends USB packets and transfer to SWD)
+2. Adaptor利用SWD（2-pin） or JTAG和Target連線
+3. DP (debug access port): arm內部用來和processor溝通的module; 利用DP可以存取許多的bus interfaces (AHB-AP/APB-AP)
+4. AHB-AP(access point): 再透過該bus controller向Flash controller操作, 
+5. Core: 可以設置BP, halt, etc...
+
+![platform](./image/bare_metal_startup/step_download_using_openocd.png)
+
+#### example
+
+![platform](./image/bare_metal_startup/exampe_openocd1.png)
+
+1. run openOCD server, 此時會locate GDB server on 3333
+
+
+![platform](./image/bare_metal_startup/exampe_openocd2.png)
+
+2. 打開arm-none-eabi-gdb.exe, 去init GDB client
+3. monitor: 用來區分是GDB command or native openOCD command; 連上talnet時就不用打monitor
+
+![platform](./image/bare_metal_startup/exampe_openocd3.png)
+
+4. 使用flash write_image寫入.elf file
