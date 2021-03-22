@@ -7,6 +7,8 @@ title: arm cortex M based startup
 
 [youtube for arm startup](https://www.youtube.com/watch?v=qWqlkCLmZoE&list=PLERTijJOmYrDiiWd10iRHY0VRHdJwUH4g&index=1)
 
+[download method](https://blog.csdn.net/m0_37621078/article/details/106798909)
+
 ## Build Process
 
 ### Cross Compliation and Toolchains
@@ -142,7 +144,7 @@ title: arm cortex M based startup
 
 - 使用weak, 讓其他層去implement各exception的handle
 
-![platform](./image/bare_metal_startup)
+![platform](./image/bare_metal_startup/data_section_boundary.png)
 
 - 需要把存在flash的.data section copy到SRAM中, 此時就要知道.data section的boundary
 - linker中會export _edata/_sdata/_etext等資訊
@@ -151,4 +153,90 @@ title: arm cortex M based startup
 
 ![platform](./image/bare_metal_startup/linker_scrip.png)
 
+- 讓不同的obj檔案merge為輸出檔
+- assign絕對位址
+- -T option
 
+常用的commands
+
+- ENTRY
+- MEMORY
+- SECTIONS
+- KEEP
+- ALIGN
+- AT>
+
+### Linker Commands
+
+#### ENTRY
+
+![platform](./image/bare_metal_startup/linker_entry.png)
+
+- 將Reset_Handler設置在ENTRY point
+- debugger將這個資訊放在first function to execute
+
+
+#### MEMORY
+
+![platform](./image/bare_metal_startup/linker_memory.png)
+
+- 一個linker scrip只能有一個MEMORY command
+
+
+![platform](./image/bare_metal_startup/memory_command.png)
+
+![platform](./image/bare_metal_startup/memory_attribute.png)
+
+- attribute: 描述section的性質
+
+![platform](./image/bare_metal_startup/example_linker_scrip.png)
+
+#### SECTIONS
+
+![platform](./image/bare_metal_startup/linker_merge.png)
+
+- 每個.o file都會有各自的.text/.data/.bss/.rodata section, 需要用SECTIONS描述這些區段的address/memory
+
+![platform](./image/bare_metal_startup/section_map.png)
+
+- 根據flash規劃的memory map, 撰寫SECTION
+
+![platform](./image/bare_metal_startup/section_syntex.png)
+
+- .text: 最後輸出的section; {} 裡面則是所有的input section
+- VMA: virtual memory address, 
+- LMA: load memory address
+- 將區段存放(LMA)和最後存取(VMA)的描述
+
+![platform](./image/bare_metal_startup/example_linker_scrip2.png)
+
+
+### Location Counter
+
+
+![platform](./image/bare_metal_startup/location_counter.png)
+
+- .
+- linker會動更新目前分配到哪個address
+- 只能在SECTION command內使用
+
+![platform](./image/bare_metal_startup/example_linker_scrip3.png)
+
+- 利用location counter指定區段的開頭/結尾, 給startup code使用
+
+![platform](./image/bare_metal_startup/data_section_boundary.png)
+
+- 在startup code裡面去copy .data區段
+
+### Linker Map
+
+![platform](./image/bare_metal_startup/example_make_file.png)
+
+- -Map: 產生memory map
+- -T: 指定linker scrip
+- 這邊使用arm-none-eabi-gcc(compile, 但也包含linker driver) command來使用linker (-T, -Map); 加入-Wl,表示後面是linker argument
+
+
+![platform](./image/bare_metal_startup/example_linker_map.png)
+
+## Flashing and Debugging
