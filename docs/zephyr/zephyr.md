@@ -15,7 +15,21 @@ title: Usage of zephyr
 
 [NCS SDK get started](https://devzone.nordicsemi.com/nordic/nrf-connect-sdk-guides/)
 
+[zephyr iot學習](https://lgl88911.gitee.io/categories/iot/)
+
 ## Overview
+
+- toolchain:
+    - python
+    - cmake
+    - Ninja
+    - west
+    - Device Tree Source
+    - kconfig
+    - gnuarmemb
+    - jlink segger
+    - nrfjprog
+
 
 ### Zephyr Overview
 
