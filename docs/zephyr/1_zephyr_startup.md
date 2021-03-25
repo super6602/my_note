@@ -184,3 +184,58 @@ Zephyr的驅動等級一共分四種
 PRE_KERNEL_1&PRE_KERNEL_2叫做low level driver
 
 ### Context Switch to Main
+
+#### z_kernel member
+
+``` cpp
+struct k_thread {
+
+struct _thread_base base;
+
+/** defined by the architecture, but all archs need these */
+struct _callee_saved callee_saved;
+
+/** static thread init data */
+void *init_data;
+
+void (*fn_abort)(struct k_thread *aborted);
+
+/** resource pool */
+struct k_heap *resource_pool;
+
+/** arch-specifics: must always be at the end */
+struct _thread_arch arch;
+};
+
+```
+
+#### _ready_q
+
+``` cpp
+struct _ready_q {
+#ifndef CONFIG_SMP
+	/* always contains next thread to run: cannot be NULL */
+	struct k_thread *cache;
+#endif
+	sys_dlist_t runq;
+	...
+};
+```
+- ready_q: 為下一個要run的thread
+
+
+
+#### 
+
+``` cpp
+char *z_setup_new_thread(struct k_thread *new_thread,
+			 k_thread_stack_t *stack, size_t stack_size,
+			 k_thread_entry_t entry,
+			 void *p1, void *p2, void *p3,
+			 int prio, uint32_t options, const char *name)
+{
+	char *stack_ptr;
+
+
+	
+```
