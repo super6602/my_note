@@ -1,6 +1,6 @@
 ---
-id: zephyr_startup
-title: Usage of zephyr startup code
+id: 1_zephyr_startup
+title: 1. Usage of zephyr startup code
 ---
 
 ## MISC

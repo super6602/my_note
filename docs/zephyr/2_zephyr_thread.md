@@ -1,6 +1,6 @@
 ---
-id: zephyr_thread
-title: Usage of zephyr thread
+id: 2_zephyr_thread
+title: 2. Usage of zephyr thread
 ---
 
 ## MISC

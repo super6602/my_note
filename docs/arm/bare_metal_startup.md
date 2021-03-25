@@ -1,5 +1,5 @@
 ---
-id: bare-metal-startup
+id: bare_metal_startup
 title: arm cortex M based startup
 ---
 
@@ -268,8 +268,6 @@ title: arm cortex M based startup
 ![platform](./image/bare_metal_startup/step_download_using_openocd.png)
 
 #### example
-
-![platform](./image/bare_metal_startup/example_openocd1.png)
 
 1. run openOCD server, 此時會locate GDB server on 3333
 
