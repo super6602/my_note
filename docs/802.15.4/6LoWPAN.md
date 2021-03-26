@@ -1,6 +1,6 @@
 ---
 id: 6LoWPAN
-title: Usage of arm_coresight
+title: 6LowPAN
 ---
 
 ## OSI Layer3 Network Layer
@@ -49,7 +49,7 @@ title: Usage of arm_coresight
     - Frag.Offset: 標記順序
 - TTL: 防止IP packet無限制傳輸; 每經過一個3-layer device時就會--; 減到0就不會再送
 - Protocol: 多路復用; 區分上層的TCP/UDP
-- Options: 通常不用
+- Options: 通常不用, 和IPv6的定義有很大的不同
 
 #### IP address
 
@@ -118,4 +118,130 @@ title: Usage of arm_coresight
 ![platform](./image/6LoWPAN/routing_table.png)
 
 - 把IP根據table轉發
+
+
+
+
+
+## IPv6
+
+![platform](./image/6LoWPAN/why_IPv6.png)
+
+為何要IPv6
+
+- 增加address size
+- 增加QoS和Security
+
+
+### IPv6 Header
+
+![platform](./image/6LoWPAN/IPv6_header.png)
+
+對照[IPv4 Header](#ipv4-header)
+
+- header比較精簡; 
+
+![platform](./image/6LoWPAN/IPv6_header2.png)
+
+- 很多欄位被刪除, 用其他方式表示
+- length/protocol type/TTL都用其他方式命名
+- option的方式完全修改
+    - Source Routing: 指定封包經過哪些router IP
+        - Option加上IP1, ...等router的IP
+    - Route Recording: 經過的router把他的IP記錄下來
+- 新的欄位, 用以QoS用
+    - Priority
+    - Flow Label
+
+整理如下
+
+1. IPv6的header長度固定 (40 bytes)
+2. Header Checksum拿掉
+3. Segmentation的功能也拿掉; 由source傳送前自行切包. Router不再做切包的事
+
+#### Option for Extension Header
+
+![platform](./image/6LoWPAN/IPv6_option.png)
+
+- Hop: 指的是router
+- 這些header可有可無
+
+![platform](./image/6LoWPAN/IPv6_option2.png)
+
+- IPv6的header可以一連串串下去, 端看source要用什麼功能, 就塞入此header
+
+#### Routing Header
+
+![platform](./image/6LoWPAN/Routing_Header.png)
+
+- sourse routing放的header
+- Address: 放IPv6的address
+- 最長放24個router
+- Strict/Loose: 要不要只經過哪一些就好 (loosey toggle)
+
+#### Fragment Header
+
+![platform](./image/6LoWPAN/fragment_header.png)
+
+- Ex: 2800 bytes做切割
+- 接收端組起來; 用ID和Fragment Offset的資訊組起來
+
+
+### IPv6 Address
+
+![platform](./image/6LoWPAN/IPv6_address.png)
+
+![platform](./image/6LoWPAN/IPv6_address2.png)
+
+
+三種分類
+
+- 1. Unicast: 送給特定
+- 2. Multicast:
+- 3. Anycast: IPv6獨有; 任何router能夠送出去就好
+
+
+address的特色如下
+
+- 128-bits; 分為8個16-bit的整數表示
+- 連續***':'*** 代表都是 ***'0'***; 兩組以上就不能這樣表示 (因為不知道0的個數)
+
+![platform](./image/6LoWPAN/IPv6_address3.png)
+
+- Provider Addresses: 電信公司
+- Link Local Addresses: Link相當於一個網路, 只能在內部使用; 電腦剛打開時會自動產生Link Local位置找router, 接觸上之後才會向router拿到global IPv6 address
+- Site Local Addresses: site相當於很多link;
+- Multicast
+- Anycast
+- Unicast
+
+
+![platform](./image/6LoWPAN/global_unicast_address.png)
+
+- TLA: 最大的電信商
+- NLA: 第二級的電信商
+- SLA: site level
+- iterface ID: 
+
+
+![platform](./image/6LoWPAN/link_local_address.png)
+
+- 開頭***FE80***就是link local address
+
+#### Interface ID
+
+![platform](./image/6LoWPAN/interface_id.png)
+
+- 組成的方法很多
+- auto-configure, 用以下的方式產生
+    - 由正式網卡產生
+    - PRN: 亂數產生
+    - DHCP: 動態分配V6 IP
+    - 人工設定
+
+### IPv6 IGMP
+
+IGMP for IPv6如下表:
+
+
 
