@@ -245,3 +245,74 @@ IGMP for IPv6如下表:
 
 
 
+## Sensor Network 
+
+![platform](./image/6loWPAN/IOT_struct.png)
+
+為了support Smart Object; 那何謂smart object?
+
+- 具有傳感功能的embedded system objects
+    - 量測溫度
+    - light switch
+    - 工業4.0
+
+- 所以需要以下的三個重要功能
+    - Processor (16 ~ 32bit MCU)
+    - memory
+    - low power wireless communication device
+
+
+![platform](./image/6loWPAN/auto_configure_ipv6.png)
+
+- 其中要能夠連上internet, 最重要的是能夠讓object具有auto configure IPv6 address並連網的能力
+- 那如何讓IPv6能夠給sensor network使用?
+- 所以必須讓IPv6瘦身, 讓IP整合到smart object
+
+Note: 
+    
+    所以最重要的是讓現有的IP protocols 能夠leverage到smart object上, 就能夠直接用IP Protocol連網
+
+
+![platform](./image/6loWPAN/IPv6_on_smart_object_problem.png)
+
+![platform](./image/6loWPAN/IPv6_on_smart_object_problem2.png)
+
+
+- 沒有現成的IP Protocol能夠mount在802.15.4
+- 因為把IP/TCP搬到802.15.4, 並不能滿足他的frame
+    - IPv6 header為40 bytes; TCP header 20 bytes; 802.15.4的MTU僅有127 bytes, 就只有一點空間可以傳data
+- 802.15.4可以做node的multi hoc傳輸, 就牽涉到rounting的問題
+    - DSR: 需要紀錄所有經過的router
+    - AODV: 需要存vector table
+    - 以上兩個routing protocol的封包也比較大, 也沒辦法放到802.15.4的封包
+
+![platform](./image/6loWPAN/ROLL.png)
+
+Low Power and Lossy Network(LLN)的性質
+
+- sensor network的缺點: 功率低, 距離近, 不穩定, 資料易流失
+- 那這種network要怎麼做rounting? 顯然不適合傳統的routing方式
+
+
+### IPv6 for smart object
+
+![platform](./image/6loWPAN/IPv6_for_smart_object.png)
+
+- 把LLNs變成end-to-end IP based solution, 把LLN上面的node架上IP, 端點之間就能夠用IP連接起來
+- 但又不希望做傳統protocol translation的gateways & proxies
+
+![platform](./image/6loWPAN/IPv6_for_smart_object2.png)
+
+- 如果不是用IP protocol, 就需要protocol translation gateways把LLNs和IP連起來, 就會遇到
+    - 沒辦法規模化
+    - 沒辦法操作
+    - 很難安裝
+    - 破壞了end-to-end的security, 
+
+![platform](./image/6loWPAN/IPv6_for_smart_object3.png)
+
+- 左圖: 透過gateway的話, 增加複雜度, 也沒辦法大規模部建
+- 右圖: 使用IP, 透過IP router就能夠連網
+
+## 6LoWPAN (IPv6 over Low-Power Wireless Perosnal Area Network)
+
