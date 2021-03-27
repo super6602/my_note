@@ -316,3 +316,33 @@ Low Power and Lossy Network(LLN)的性質
 
 ## 6LoWPAN (IPv6 over Low-Power Wireless Perosnal Area Network)
 
+![platform](./image/6loWPAN/low_power_sensor_node.png)
+
+- 左邊的每個node都是sensor node, 都是低功率wifi
+- sensor network要與右邊的IP nework相連的話, 就需要LoWPAN Router作為gateway
+
+![platform](./image/6loWPAN/6LoWPAN.png)
+
+![platform](./image/6loWPAN/6LoWPAN2.png)
+
+
+6LoWPAN的特色:
+
+- 封包size 127bytes, meets 802.15.4
+- 16-bit or 64-bit MAC addresses
+- 頻寬不高 (250kB)
+- 可以和傳統的IP network互連 (link ethernet or WiFi), 就能夠跟真正的application互動
+
+### Sturcture
+
+![platform](./image/6loWPAN/6LoWPAN3.png)
+
+- MAC layer用的是802.15.4, Network layer跑IPv6
+- 6LoWPAN是介於IPv6和802.15.4之間 (二三層之間)
+- 要做的是把IPv6透過6LoWPAN做壓縮, 拆包, 就相當於是Adaption layer
+
+![platform](./image/6loWPAN/6LoWPAN4.png)
+
+- IPv6的minimum MTY最少需要1280bytes, 所以需要做拆包
+- 要把48-bytes header(40 for IP, 8 for UDP)做壓縮
+- Chained Header format, 和IPv6一樣, 並透過Dispatch欄位標記 
