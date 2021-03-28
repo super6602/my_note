@@ -3,6 +3,12 @@ id: 6LoWPAN
 title: 6LowPAN
 ---
 
+## MISC
+
+[6LoWPAN](https://www.youtube.com/channel/UCrLmuEDuUdVhXwXbnXhbDwA)
+
+[OSI layer](https://www.youtube.com/channel/UCTywnxREQ2MwebGwC0u-bBg)
+
 ## OSI Layer3 Network Layer
 
 ![platform](./image/6LoWPAN/osi_model_layer3.png)
@@ -346,3 +352,183 @@ Low Power and Lossy Network(LLN)的性質
 - IPv6的minimum MTY最少需要1280bytes, 所以需要做拆包
 - 要把48-bytes header(40 for IP, 8 for UDP)做壓縮
 - Chained Header format, 和IPv6一樣, 並透過Dispatch欄位標記 
+
+
+### 6LoWPAN Header Compression
+
+![platform](./image/6loWPAN/6LoWPAN_hdr_compression.png)
+
+對比一下 [IPv6 Header](#ipv6-header)
+
+- 0b011: 代表後面是header壓縮說明
+- carrier inline: 沒壓縮內容, 會帶在後面In-line IPv6 Header Bits
+- TF: 代表In-line IPv6 Header Bits會帶有那些內容
+    - ECN: 
+    - DSCP: 
+- NH: 下一個header到底有沒有壓縮
+    - 0: 下一個header沒有壓縮 (like TCP)
+    - 1: 下一個header有壓縮 (like UDP)
+- HLIM: 代表該筆封包經過幾次hop就要出網路, router收到後會--, 減到0就丟掉
+    - 0: 代表hop counter沒有壓縮, 會帶在in-line IPv6 Header Bits
+
+***Context***:
+
+    IPv6有分為link local(開機自行產生的, fe80::) 和global(router給的); 
+    如果是global IPv6, 他的prefix一般都會相同, 所以就用context表示 (as IPv6 Prefix)
+    在sensor node裡面, router最多給16種不同的prefix, 並用4-bit編號
+
+- CID: 根據source/destination address用的
+    - 0: 代表編號0, 後面也不用再跟1-bytes prefix
+    - 1: 有的話, CID欄位會在插8 bit (4-bits for source IP prefix, 4-bits for destination IP prefix)
+
+
+![platform](./image/6loWPAN/6LoWPAN_hdr_compression2.png)
+
+- SAC/DAC:
+    - 0:
+    - 1: Context-based: 就是用編號 (prefix)
+
+- SAM/DAM: 會有多長
+    - 3 (elided): IPv6 address在In-line IPv6 Header Bits可以省略; 可以從MAC address導出來, 或是用link local address (fe80::)
+
+- M: multicast or others
+
+#### Traffic Class and FLow Label
+
+![platform](./image/6loWPAN/TF_flow_label.png)
+
+- TF的定義
+
+#### Next Header/Hop Limit
+
+![platform](./image/6loWPAN/nh_hop.png)
+
+- NH: next header沒有壓縮
+- NHC: next header壓縮的本文
+
+### IPv6 Address Compression
+
+#### IPv6 Unicast
+
+![platform](./image/6loWPAN/IPv6_address_compression.png)
+
+- IPv6 Unicast address分為Prefix和Interface ID
+- Prefix:
+    - address在6LoWPAN通常會有相同的prefix (router會給相同的prefix)
+    - 通訊通常不會和太多的central devices通訊 (因為通常都是做數據收集, 再由central送到internet) 
+    - prefix建立contextx做0 ~ 15的編號 
+    - 只有簡單的state
+- Interface ID:
+    - interface ID通常會在auto configuration的時候, 由L2 MAC address取得
+    - 所以若interface ID可以由layer 2 MAC address取得的話, 就可以不用紀錄
+
+
+![platform](./image/6loWPAN/IPv6_address_compression2.png)
+
+- SAM/DAM: 
+    - 0b11: 像是link local (fe80::(MAC address))
+    - 0b10: 112-bit prefix省掉
+    - ..
+
+![platform](./image/6loWPAN/IPv6_address_compression3.png)
+
+- SAC/DAC:
+    - 0 (stateless mode): 代表是link local (目的是去找router)
+    - 1 (context-based): 代表是router給的global IP address
+
+
+#### IPv6 Multicast
+
+![platform](./image/6loWPAN/IPv6_address_compression3.png)
+
+Note:
+
+    Flag = 0, Scope = 2, 就是一開始的時候IPv6做群播 
+    像是找router (router certiciation, link-local all-routers), 或是找neighboor (link-local all nodes)
+
+- GroupID: 會有不同的壓縮方法
+    - DAM = 11: router做群播
+
+### IPv6 Next Header Compression
+
+![platform](./image/6loWPAN/6LoWPAN_nxt_hdr_compression.png)
+
+- 每一個header會記錄next header有沒有壓縮
+- 像是HC, 紀錄next header (like UDP)是怎麼壓縮的
+
+#### UDP Header Compression
+
+![platform](./image/6loWPAN/6LoWPAN_nxt_hdr_compression2.png)
+
+UDP header怎麼做壓縮?
+
+- UDP Port不用開放這的大, 所以讓
+    - 讓UDP Port落在61616 ~ 61632 (only 4-bits)
+    - IPv6本身就有長度欄位, 所以簡化Length
+    - checksum就看有沒有其他protocol就已經簡化了
+
+所以先把UDP先用1-bytes的control byte, 描述如何壓縮UDP
+
+- C: checksum能不能被壓縮
+- P: 
+    - 0b'00: 代表port number沒有辦法壓縮
+    - 0b'1/2: source/destination port的前8個bit可以省略
+    - 0b'11: 代表port number範圍落在了61616 ~ 61632之間
+
+
+### example 
+
+![platform](./image/6loWPAN/example_link_local_unicast.png)
+
+- 從48-bytes壓縮成7-bytes
+- Source/Destination IID從link header來
+- 整個len就從link layer的Len來
+
+
+![platform](./image/6loWPAN/example_global_unicast.png)
+
+- global的IP用context編號
+- source/dest prefix用編號, 
+
+![platform](./image/6loWPAN/example_link_local_multicast.png)
+
+- 找neighboor/router用的
+
+### Neighbor Discovery
+
+![platform](./image/6loWPAN/6LoWPAN_neighbor_discovery.png)
+
+- 傳統的IPV6有neighbor discovery的方法, 去找鄰近的router和找到IPv6 Address Prefix
+- 那怎麼從IP address轉換成MAC address? (Note: IPv6沒有IRP protocol)
+- node沒開機怎麼發現?
+
+![platform](./image/6loWPAN/6LoWPAN_neighbor_discovery2.png)
+
+- 通常ND都是在 
+    - LAN網路 (connect interface, 比較穩定的網路)
+
+- 但6LoWPAN有以下的特色
+    - Lossy: 無線網路不穩定
+    - Asymmetric radio environment: 個別node的傳輸距離不同
+    - multicast traffic: 耗電
+    - address resolution: 並沒有這麼樣的需求 (因為通常只送給central, 也不太需要常換MAC)
+    - EUI-64: sensor node獨有的
+
+
+![platform](./image/6loWPAN/6LoWPAN_neighbor_discovery3.png)
+
+- Border Router: 對internet連接的
+- 1. 6LoWPAN Host開機, 找Router (RS: Router solicitation)
+- 2. Router: router收到後做回應, 回RA (router advertisement)
+- 3. NS(找鄰近的node) + ARO(位置註冊)
+- 4. NCE: 做暫時位置儲存
+- 5. DAR/DAD/DAC: 檢查address有沒有重複
+- 6. 連線完成, 可以向internet連線
+
+
+### 6LoWPAN in an IP Stack
+
+![platform](./image/6loWPAN/6LoWPAN_in_stack.png)
+
+- 在802.15.4和IP之間
+
