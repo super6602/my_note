@@ -73,11 +73,11 @@ Ex:
     直接去出接口, 但不具備份性 (接口當掉就玩了)
     從IP gateway address去找, 有備份性, 但是效率不高
 
-### Default Routes
+#### Default Routes
 
 ![platform](./image/routing/default_routes.png)
 
 - 上網時有非常多的路由路徑 , 全部用靜態路由很麻煩也占空間, 此時需要default routes
 - 全0: 通配router, 可以匹配任意路由條目 (最不精確). 永遠是最後一個匹配
 
-
+#### Loading Balancing 
