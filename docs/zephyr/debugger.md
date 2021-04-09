@@ -15,6 +15,8 @@ title: debugger knowledge
 
 [使用SWO printf](https://www.strongerhuang.com/printf/printf%E7%B3%BB%E5%88%97%E6%95%99%E7%A8%8B06_SWO%E6%89%93%E5%8D%B0%E8%BE%93%E5%87%BA%E9%85%8D%E7%BD%AE%EF%BC%8C%E5%9F%BA%E4%BA%8EJ-Link%E3%80%8ESWO%20Viewer%E3%80%8F.html)
 
+[segger system view](https://www.youtube.com/watch?v=JDuL0cUeazY#action=share)
+
 ## GBD
 
 ### introduction
