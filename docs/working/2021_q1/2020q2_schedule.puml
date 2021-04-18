@@ -1,0 +1,31 @@
+@startgantt
+printscale weekly
+Project starts the 18th of april 2021
+
+[LE Audio Better Performance] as [TASK1] lasts 180 days
+[TASK1] is colored in Lavender/LightBlue
+
+[librtbtPY training] as [subtask1] lasts 30 days
+[librtbtPY refactor] as [subtask2] lasts 75 days
+[PA/PAST/BIS spec] as [subtask3] lasts 30 days
+[UP share] as [subtask4] lasts 15 days
+[lowerstack scrip writing] as [subtask5] lasts 60 days
+
+[subtask1] -> [subtask2]
+[subtask3] -> [subtask4]
+[subtask4] -> [subtask5]
+
+-- separator --
+
+[LE Audio Issue Tracking] as [TASK2] lasts 180 days
+[TASK2] is colored in Lavender/LightBlue
+
+[LE audio H/FW study] as [subtask6] lasts 30 days
+[SOC struct study] as [subtask7] lasts 30 days
+[LE Audio HW/FW spec writing and review] as [subtask8] lasts 60 days
+
+[subtask6] -> [subtask8]
+
+2021-01-18 to 2021-01-22 are named [End's committee]
+2021-01-18 to 2021-01-22 are colored in salmon 
+@endgantt
